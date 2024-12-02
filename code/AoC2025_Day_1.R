@@ -3,7 +3,7 @@
 library(magrittr)
 library(dplyr)
 
-dat <- read.csv2("../data/D1.txt",sep = " ",header = FALSE)
+dat <- read.csv2("C:/Users/MMAJR1/Documents/Perso/R for fun/AdventOfCode/D1.txt",sep = " ",header = FALSE)
 
 # A
 dat %<>% mutate(
