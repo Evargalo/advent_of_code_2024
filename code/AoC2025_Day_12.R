@@ -126,15 +126,6 @@ calc_sides <- function(reg){
 
 calc_sides(835)
 
-# no idea why this fails
-res %<>% mutate(sides=calc_sides(reg))
+res %<>% rowwise %>% mutate(sides=calc_sides(reg)) %>% ungroup
 res %>% summarise(sum(area*sides))
-
-# Well...
-tot <- 0
-for(i in 1:nrow(res)){
-  s <- calc_sides(res$reg[i])
-  tot <- tot+ res$area[i] * s
-}
-tot
 # 787680
