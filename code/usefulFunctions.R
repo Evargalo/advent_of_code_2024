@@ -233,15 +233,12 @@ fillDeadEnds <- function(mazeInfo, walls, ways, keys){
 
 
 drawMaze <- function(maze){
-  x <- maze$y 
-  y <- (-maze$x)
+  x <- maze$x
+  y <- maze$y
   t <- maze$t
   gf_tile(y~x, fill=~maze$t)
 }
 # drawMaze(mazeInfo$Maze)
-
-# smallMaze <- list(Maze=mazeInfo$Maze %>% filter(x<15 & y<15))
-# drawMaze(smallMaze$Maze)
 
 distanceInMaze <- function(mazeInfo, origin, walls, ways, keys){
   endPointChar <- "£"
