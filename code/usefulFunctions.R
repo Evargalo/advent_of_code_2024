@@ -71,7 +71,7 @@ cutAfterLast <- function (text, pattern) {
   gsub(pattern, " ", text) %>% rmLastWord->t
   gsub(" ", pattern, t)
 }
-cutAfterLast("a/df/b/jh", "/")
+# cutAfterLast("a/df/b/jh", "/")
 
 cutString <- function(s, nbParts=10){
   step <- nchar(s)%/%nbParts
@@ -100,7 +100,7 @@ reduceString <- function(s, pattern="[(][)]|[[][]]|[{][}]|[<][>]"){
   }
   s
 }
-#reduceString("[({(<(())[]>[[{[]{<()<>>")
+# reduceString("[({(<(())[]>[[{[]{<()<>>")
 
 
 ###############
