@@ -64,3 +64,4 @@ dat %<>% mutate(
     y8087=(y+8087*vy) %% yMax
   )
 dat %>% gf_tile((-y8087)~x8087,col="darkgreen")
+ggsave("../graph_day14.png")
