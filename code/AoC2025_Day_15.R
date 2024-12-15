@@ -14,7 +14,7 @@ maze <- buildMaze(dat$V1)
 m <- maze$Maze
 max(m$x)
 max(m$y)
-drawMaze(m)
+drawMaze(m,TRUE)
 
 ##########################################################
 # A
@@ -23,8 +23,8 @@ move <- function(m,dir){
   robot <- m %>% filter(t=="@")
   if(dir=="^") front <- m %>% filter(x<=robot$x,y==robot$y) %>% arrange(-x)
   if(dir=="v") front <- m %>% filter(x>=robot$x,y==robot$y) %>% arrange(x)
-  if( dir=="<") front <- m %>% filter(x==robot$x,y<=robot$y) %>% arrange(-y)
-  if( dir==">") front <- m %>% filter(x==robot$x,y>=robot$y) %>% arrange(y)
+  if(dir=="<") front <- m %>% filter(x==robot$x,y<=robot$y) %>% arrange(-y)
+  if(dir==">") front <- m %>% filter(x==robot$x,y>=robot$y) %>% arrange(y)
   front %<>% mutate(rk=row_number())
   if(all(front$t!=".")) return(m)
   firstwall <- front %>% filter(t=="#") %>% pull(rk) %>% head(1) %>% unlist
@@ -39,7 +39,7 @@ i <- 0
 for(dir in moves){
   suppressMessages(m <- move(m,dir))
   if(i %% 100 == 0) print(i)
-  i<-i+1
+  i - i+1
 }
 m %>% filter(t=="O") %>% mutate(gps=100*(x-1)+y-1) %>% summarise(sum(gps))
 # 1515788
@@ -86,7 +86,7 @@ move_down <- function(mm){
 }
 
 moveB <- function(m,dir){
-  if( dir=="<" | dir==">") return(move(m,dir)) # easy case
+  if(dir=="<" | dir==">") return(move(m,dir)) # easy case
   robot <- m %>% filter(t=="@")
   if(dir=="^") dest <- move_up(robot)
   if(dir=="v") dest <- move_down(robot)
