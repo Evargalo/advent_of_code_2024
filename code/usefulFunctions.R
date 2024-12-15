@@ -232,10 +232,14 @@ fillDeadEnds <- function(mazeInfo, walls, ways, keys){
 # fillDeadEnds(smallMaze, walls, ways, c(""))->newSmallMaze
 
 
-drawMaze <- function(maze){
+drawMaze <- function(maze,switch=FALSE){
   x <- maze$x
   y <- maze$y
   t <- maze$t
+  if(switch) { 
+    x <- maze$y
+    y <- -maze$x
+  }
   gf_tile(y~x, fill=~maze$t)
 }
 # drawMaze(mazeInfo$Maze)
@@ -304,9 +308,9 @@ g <- graph_from_data_frame(t, directed = TRUE)
 g %>% get.vertex.attribute()
 g %>% get.diameter()
 g %>% gsize
-g %>% 
+g %<>% 
   add.vertices(1, name="e") %>% 
-  add.edges(c("start", "e", "e", "A", "end", "e")) ->g 
+  add.edges(c("start", "e", "e", "A", "end", "e"))
 # g %>% plot
 g %>% delete_vertices(c("b", "end")) %>% plot
 
@@ -315,7 +319,7 @@ get.all.shortest.paths(g, "start", "end", mode = "all")
 get.all.shortest.paths(g, "end", "start")
 get.all.shortest.paths(g, "end", "start", mode = "all")
 
-g %>% get.adjacency()->adj
+g %>% get.adjacency() -> adj
 adj %>% as.matrix
 adj %>% matrixPow(10)
 
