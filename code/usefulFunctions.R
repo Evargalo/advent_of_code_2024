@@ -196,7 +196,7 @@ buildTableNeighbour <- function(maze){
 
 crossRoads <- function(mazeInfo, walls, ways){
   mazeInfo$Maze %>% filter(t %in% ways) %>% select(x, y) -> canPass
-  canPass %>% mutate(xx=x, yy=y) %>% select(xx, yy) -> crossRoads
+  canPass %>% select(xx=x, yy=y) -> crossRoads
   crossRoads$pw=pmap_int(crossRoads, countNeighbours, spots=canPass)
   crossRoads %>% filter(pw>2)
 }
