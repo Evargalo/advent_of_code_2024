@@ -15,7 +15,7 @@ dat <- read.csv2("C:/Users/MMAJR1/Documents/Perso/R for fun/AdventOfCode/AoC2024
 
 ma <- buildMaze(dat$V1)
 m <- ma$Maze
-drawMaze(m)
+drawMaze(m,switch = TRUE)
 
 goal <- ma$CharESpots
 dep <- ma$CharSSpots
@@ -32,8 +32,7 @@ cr %<>% select(x=xx,y=yy,id_cr)
 move_v <- function(xa,ya,l){
   corridor <- m %>% 
     filter(x == xa, y != ya) %>% 
-    mutate(dist=abs(x-xa)+abs(y-ya)) %>% 
-    arrange(dist) 
+    mutate(dist=abs(x-xa)+abs(y-ya)) 
   left_wall <- corridor %>% filter(y<ya & t=="#") %>% filter(y==max(y)) %>% pull(y) %>% unlist
   right_wall <- corridor %>% filter(y>ya & t=="#") %>% filter(y==min(y)) %>% pull(y) %>% unlist
   corridor %<>% filter(y > left_wall & y < right_wall)
@@ -52,8 +51,7 @@ move_v(dep$x,dep$y,0)
 move_h <- function(xa,ya,l){
   corridor <- m %>% 
     filter(x != xa, y == ya) %>% 
-    mutate(dist=abs(x-xa)+abs(y-ya)) %>% 
-    arrange(dist) 
+    mutate(dist=abs(x-xa)+abs(y-ya))
   left_wall <- corridor %>% filter(x<xa & t=="#") %>% filter(x==max(x)) %>% pull(x) %>% unlist
   right_wall <- corridor %>% filter(x>xa & t=="#") %>% filter(x==min(x)) %>% pull(x) %>% unlist
   corridor %<>% filter(x > left_wall & x < right_wall)
@@ -78,7 +76,7 @@ move <- function(x,y,l,dir){
 # starting point, two possible directions
 pos0 <- dep %>% mutate(l=0,dir=0) %>% 
   bind_rows(dep %>% mutate(l=1000,dir=1))
-# where we have already gone
+# tibble of the spots where we have already gone
 visited <- pos0 %>% select(x,y) %>% unique
 # first move
 pos <- pmap_dfr(pos0, move)
@@ -101,8 +99,7 @@ pos %>% inner_join(goal,by=c("x","y")) %>% summarise(min(l))
 move_v <- function(xa,ya,l){
   corridor <- m %>% 
     filter(x == xa, y != ya) %>% 
-    mutate(dist=abs(x-xa)+abs(y-ya)) %>% 
-    arrange(dist) 
+    mutate(dist=abs(x-xa)+abs(y-ya)) 
   left_wall <- corridor %>% filter(y<ya & t=="#") %>% filter(y==max(y)) %>% pull(y) %>% unlist
   right_wall <- corridor %>% filter(y>ya & t=="#") %>% filter(y==min(y)) %>% pull(y) %>% unlist
   corridor %<>% filter(y > left_wall & y < right_wall)
@@ -120,8 +117,7 @@ move_v(dep$x,dep$y,0)
 move_h <- function(xa,ya,l){
   corridor <- m %>% 
     filter(x != xa, y == ya) %>% 
-    mutate(dist=abs(x-xa)+abs(y-ya)) %>% 
-    arrange(dist) 
+    mutate(dist=abs(x-xa)+abs(y-ya)) 
   left_wall <- corridor %>% filter(x<xa & t=="#") %>% filter(x==max(x)) %>% pull(x) %>% unlist
   right_wall <- corridor %>% filter(x>xa & t=="#") %>% filter(x==min(x)) %>% pull(x) %>% unlist
   corridor %<>% filter(x > left_wall & x < right_wall)
