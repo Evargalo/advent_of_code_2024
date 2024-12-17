@@ -101,21 +101,24 @@ reduceString <- function(s, pattern="[(][)]|[[][]]|[{][}]|[<][>]"){
   s
 }
 # reduceString("[({(<(())[]>[[{[]{<()<>>")
-
+add0 <- function(x,nbCharVoulus=2){
+  ifelse(nchar(x)<nbCharVoulus,add0(paste0('0',x),nbCharVoulus),as.character(x)) 
+}
 
 ###############
 # Binary ----
 
-BinToDec <- function(x, charactersForOnes="1") sum(2^(which(rev(unlist(strsplit(as.character(x), "")) %in% charactersForOnes))-1))
+# BinToDec <- function(x, charactersForOnes="1") sum(2^(which(rev(unlist(strsplit(as.character(x), "")) %in% charactersForOnes))-1))
 # ones <- c("R", "B")
 # x <- "BBFFBBFLRL"
 # BinToDec(x, ones)
+packBits(type = "integer")
 
-DecToBin <- function(n) {
-  ifelse(n > 1, 10*DecToBin(as.integer(n/2)) + n %% 2 , n %% 2) 
-}
-
+# DecToBin <- function(n) {
+#   ifelse(n > 1, 10*DecToBin(as.integer(n/2)) + n %% 2 , n %% 2) 
+# }
 # DecToBin(1:16)
+intToBits
 
 nb1InBinary <- c(0, 1)
 for(a in 1:15){nb1InBinary <- c(nb1InBinary, 1+nb1InBinary)}
