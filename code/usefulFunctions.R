@@ -112,13 +112,14 @@ add0 <- function(x,nbCharVoulus=2){
 # ones <- c("R", "B")
 # x <- "BBFFBBFLRL"
 # BinToDec(x, ones)
-packBits(type = "integer")
+
+# packBits(.,type = "integer")
 
 # DecToBin <- function(n) {
 #   ifelse(n > 1, 10*DecToBin(as.integer(n/2)) + n %% 2 , n %% 2) 
 # }
 # DecToBin(1:16)
-intToBits
+# intToBits
 
 nb1InBinary <- c(0, 1)
 for(a in 1:15){nb1InBinary <- c(nb1InBinary, 1+nb1InBinary)}
@@ -207,6 +208,14 @@ crossRoads <- function(mazeInfo, walls, ways){
 # countNeighbours(316, 3, canPass)
 # crossRoads(mazeInfo, walls, ways)
 
+find_crossroads <- function(m,ways=".",xMin=0,yMin=0,xMax=70,yMax=70){
+  m %>% filter(t %in% ways) %>% select(x, y) -> canPass
+  canPass %>% select(xx=x, yy=y) -> crossRoads
+  crossRoads$pw=pmap_int(crossRoads, countNeighbours, spots=canPass)
+  crossRoads %<>% mutate(pw=pw-(xx==xMin) - (yy==yMin) - (xx==xMax) - (yy==yMax) ) 
+  crossRoads %>% filter(pw>2)
+}
+
 fillDeadEnds <- function(mazeInfo, walls, ways, keys){
   w <- walls[1]
   mazeInfo$Maze -> newMaze
@@ -231,9 +240,24 @@ fillDeadEnds <- function(mazeInfo, walls, ways, keys){
   }
   res
 }
-
 # fillDeadEnds(smallMaze, walls, ways, c(""))->newSmallMaze
-
+fill_de <- function(m){
+  m -> newMaze
+  newMaze %>% filter(t == "#") %>% select(x, y) -> blocks
+  newMaze %>% filter(t == ".") -> canPass
+  canPass$bw = pmap_int(canPass %>% select(x, y), countNeighbours, spots=blocks)
+  canPass %>% filter((bw>2)) %>% select(x,y) %>% mutate(t="#") -> deadEnds
+  while (nrow(deadEnds)>0) {
+    print(nrow(deadEnds))
+    newMaze %>% anti_join(deadEnds, by=c("x", "y")) %>% bind_rows(deadEnds) -> newMaze
+    newMaze %>% filter(t == "#") %>% select(x, y) -> blocks
+    newMaze %>% filter(t == ".") -> canPass
+    canPass$bw = pmap_int(canPass %>% select(x, y), countNeighbours, spots=blocks)
+    canPass %>% filter((bw>2)) %>% select(x,y) %>% mutate(t="#") -> deadEnds
+    nm <<- newMaze
+  }
+  newMaze
+}
 
 drawMaze <- function(maze,switch=FALSE){
   x <- maze$x
