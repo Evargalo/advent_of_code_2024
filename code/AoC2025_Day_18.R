@@ -94,3 +94,46 @@ b %>% tail(1)
 # Graphics
 path %>% anti_join(b %>% select(x,y)) %>% mutate(bombe="0") %>% bind_rows(b %>% mutate(bombe="1")) %>% 
   gf_tile(gformula = (-x)~y,fill = ~bombe)
+
+
+##############################################################
+# B differently, doesn't need to draw maps to access visually
+
+# walls on either side. If they intersect we cannot pass
+SW <- tibble(x=-1,y=0:70) %>% bind_rows(tibble(x=0:70,y=71))
+NE <- tibble(x=71,y=0:70) %>% bind_rows(tibble(x=0:70,y=-1))
+# byte fallen taht are not connected to a wall
+unconnected <- tibble(x=integer(),y=integer())
+
+# Try to connect xx,yy to a wall
+include <- function(xx,yy,tab_name){
+  tab <- get(tab_name)
+  if(any(abs(tab$x-xx)<=1 & abs(tab$y-yy)<=1)){
+    assign(tab_name,tab %>% add_row(x=xx,y=yy),envir = .GlobalEnv)
+    assign("unconnected",unconnected %>% filter(x!=xx | y!=yy),envir = .GlobalEnv)
+    to_add <- unconnected %>% filter(abs(x-xx)<=1 & abs(y-yy)<=1)
+    map2(.x = to_add$x,.y=to_add$y,function(x,y)include(x,y,tab_name))
+    return(TRUE)
+  }
+  return(FALSE)
+}
+
+# act for each falling byte
+assign_drop <- function(x,y){
+  lNE <- include(x,y,"NE")
+  lSW <- include(x,y,"SW")
+  if(lNE | lSW) if(inner_join(NE,SW,by = join_by(x, y)) %>% nrow > 0) return(TRUE)
+  if(!lNE & !lSW) assign("unconnected",unconnected %>% add_row(x=x,y=y),envir = .GlobalEnv)
+  return(FALSE)
+}
+
+for(i in 1:3000){
+  if(i %% 100==0) print(i)
+  if(assign_drop(dat$x[i],dat$y[i])) {print(i);break}
+}
+dat[i,]
+# 56,29
+
+gf_tile(NE,(-y)~x)
+gf_tile(SW,(-y)~x)
+gf_tile(unconnected,(-y)~x)
