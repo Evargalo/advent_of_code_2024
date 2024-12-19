@@ -30,11 +30,11 @@ is_poss <- function(pat){
   if(!any(possib)) return(FALSE)
   my_tow <- towels[possib]
   new_pats <- sapply(my_tow,function(x)string_after(tow=x,pat=pat))
+  # return(map(new_pats,is_poss) %>% reduce(any)) # too slow to check every combination
   while(length(new_pats>0)){
     if(is_poss(new_pats[1])) return(TRUE)
     new_pats <- new_pats[-1]
   }
-  # return(map(new_pats,is_poss) %>% reduce(any)) # too slow to check every combination
   return(FALSE)
 }
 is_poss("gruguburu")
@@ -61,3 +61,4 @@ nb_poss("brwbrwbrwbbrw")
 
 map(pats,nb_poss) %>% reduce(sum)
 # 777669668613191
+
