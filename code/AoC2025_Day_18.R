@@ -90,3 +90,7 @@ path %>% anti_join(b %>% select(x,y)) %>% mutate(safe=0) %>% bind_rows(b %>% mut
   gf_tile(gformula = y~x,fill = ~safe)
 b %>% tail(1)
 # 56,29
+
+# Graphics
+path %>% anti_join(b %>% select(x,y)) %>% mutate(bombe="0") %>% bind_rows(b %>% mutate(bombe="1")) %>% 
+  gf_tile(gformula = (-x)~y,fill = ~bombe)
