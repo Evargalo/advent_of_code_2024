@@ -99,10 +99,10 @@ path %>% anti_join(b %>% select(x,y)) %>% mutate(bombe="0") %>% bind_rows(b %>% 
 ##############################################################
 # B differently, doesn't need to draw maps to access visually
 
-# walls on either side. If they intersect we cannot pass
+# walls on either side. Iff they intersect, we cannot pass
 SW <- tibble(x=-1,y=0:70) %>% bind_rows(tibble(x=0:70,y=71))
 NE <- tibble(x=71,y=0:70) %>% bind_rows(tibble(x=0:70,y=-1))
-# byte fallen taht are not connected to a wall
+# byte fallen that are not connected to a wall
 unconnected <- tibble(x=integer(),y=integer())
 
 # Try to connect xx,yy to a wall
