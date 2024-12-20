@@ -240,24 +240,6 @@ fillDeadEnds <- function(mazeInfo, walls, ways, keys){
   }
   res
 }
-# fillDeadEnds(smallMaze, walls, ways, c(""))->newSmallMaze
-# fill_de <- function(m){
-#   m -> newMaze
-#   newMaze %>% filter(t == "#") %>% select(x, y) -> blocks
-#   newMaze %>% filter(t == ".") -> canPass
-#   canPass$bw = pmap_int(canPass %>% select(x, y), countNeighbours, spots=blocks)
-#   canPass %>% filter((bw>2)) %>% select(x,y) %>% mutate(t="#") -> deadEnds
-#   while (nrow(deadEnds)>0) {
-#     print(nrow(deadEnds))
-#     newMaze %>% anti_join(deadEnds, by=c("x", "y")) %>% bind_rows(deadEnds) -> newMaze
-#     newMaze %>% filter(t == "#") %>% select(x, y) -> blocks
-#     newMaze %>% filter(t == ".") -> canPass
-#     canPass$bw = pmap_int(canPass %>% select(x, y), countNeighbours, spots=blocks)
-#     canPass %>% filter((bw>2)) %>% select(x,y) %>% mutate(t="#") -> deadEnds
-#     nm <<- newMaze
-#   }
-#   newMaze
-# }
 
 count_neighbours <- function(m,can_pass=".",nb_nei=4){
   m %<>% filter(t %in% can_pass)
@@ -270,25 +252,24 @@ count_neighbours <- function(m,can_pass=".",nb_nei=4){
     group_by(x,y,t) %>% 
     summarise(nb_nei=sum(nei),.groups="drop")
 }
-# remove deadends
-reduce_maze <- function(maze,can_pass=".",walls="#",protected_cells=c("S","E")){
-  if(!any(maze$t %in% can_pass)) return(maze)
-  m <- maze %>% filter(t %notin% walls)
-  tab_nei <- m %>% 
-    count_neighbours() %>% 
-    filter(t %in% protected_cells | nb_nei > 1)
-  return(tab_nei)
-}
+
 fill_de <- function(m,can_pass=".",walls="#",protected_cells=c("S","E")){
-  nb_cells <- nrow(m)
- # print(nb_cells)
-  m <- reduce_maze(m,can_pass,walls,protected_cells)
-  while(nb_cells > nrow(m)){
-    nb_cells <- nrow(m)
-    m <- reduce_maze(m)
+  if(!any(maze$t %in% can_pass)) return(maze)
+  m <- maze %>% filter(! t %in% walls)
+  tab_nei <- m %>% count_neighbours(can_pass=c(can_pass,protected_cells),nb_nei=4)
+  m_keep <- tab_nei %>% filter(t %in% protected_cells | nb_nei > 1)
+  m_rm <- tab_nei %>% filter(!(t %in% protected_cells) & nb_nei <= 1)
+  while(m_rm %>% nrow > 0){
+    tab_nei <- m_keep %>% cross_join(m_rm %>% select(xx=x,yy=y)) %>% 
+      mutate(nei=(abs(x-xx)+abs(y-yy)==1)) %>% 
+      group_by(x,y,t,nb_nei) %>% summarise(rm_nei=sum(nei),.groups="drop") %>% 
+      mutate(nb_nei=nb_nei-rm_nei)
+    m_keep <- tab_nei %>% filter(t %in% protected_cells | nb_nei > 1)
+    m_rm <- tab_nei %>% filter(!(t %in% protected_cells) & nb_nei <= 1)
   }
-  m %>% select(-nb_nei)
+  m_keep %>% select(-nb_nei)
 }
+
 
 drawMaze <- function(maze,switch=FALSE){
   x <- maze$x
