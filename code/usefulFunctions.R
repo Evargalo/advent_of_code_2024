@@ -351,7 +351,7 @@ g %<>%
   add.vertices(1, name="e") %>% 
   add.edges(c("start", "e", "e", "A", "end", "e"))
 # g %>% plot
-g %>% delete_vertices(c("b", "end")) %>% plot
+# g %>% delete_vertices(c("b", "end")) %>% plot
 
 get.all.shortest.paths(g, "start", "end")
 get.all.shortest.paths(g, "start", "end", mode = "all")
