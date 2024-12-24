@@ -6,7 +6,6 @@ options(digits = 22)
 ############
 # Data ----
 
-
 # One character per column in a df
 fileToMatrix <- function(file) read_lines(file) %>% strsplit('') %>% reduce(rbind) %>% unname()
 
@@ -43,7 +42,6 @@ pgcd <- function(a, b){
 ppcm <- function(a, b){
   (a%/%pgcd(b, a)*b) %>% abs
 }
-
 # ppcm(-24, 90)
 
 ###############
@@ -62,7 +60,7 @@ cutAfter <- function (text, pattern) sub(pattern=paste0(pattern, ".*"), "", text
 cutAfter("a/df/b/jh", "/")
 cutBefore("a/df/b/jh", "/")
 
-trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+trim <- function(x) gsub("^\\s+|\\s+$", "", x)
 
 rmLastWord <- function(x) sub(pattern = "\\s*\\w*$", x = x, replacement = "")
 rmFirstWord <- function(x) sub(pattern = "^.*?(\\s)", x = x, replacement = "")
@@ -81,7 +79,6 @@ cutString <- function(s, nbParts=10){
 
 stringToVector <- function(s) cutString(s, nchar(s))
 # stringToVector("azertyuiopqsdfghjklmwxcvbnazer")
-
 
 keepOnly <- function(s, numbers=FALSE, letters=FALSE, charac=""){
   pat <- "[^"
@@ -123,7 +120,7 @@ add0 <- function(x,nbCharVoulus=2){
 
 nb1InBinary <- c(0, 1)
 for(a in 1:15){nb1InBinary <- c(nb1InBinary, 1+nb1InBinary)}
-nb1InBinary[5:15] # Starts at zero !
+# nb1InBinary[5:15] # Starts at zero !
 
 ###############
 # Mazes----
@@ -151,13 +148,6 @@ buildMaze <- function(rawData){
   }
   res
 }
-
-
-# Example
-# rawData <- X3DecembreInput$X1
-# rawData %>% sapply(function(x) str_replace_all(string = x, pattern = "#", replacement = "B")) %>% 
-#   unname() -> rawData
-# mazeInfo <- buildMaze(rawData)
 
 find4Neighbours <- function(xx, yy, spots){
   spots %>% filter (((xx-x==0) & ((yy-y) %in% c(-1, 1))) | ((yy-y==0) & ((xx-x) %in% c(-1, 1))) )
@@ -270,7 +260,6 @@ fill_de <- function(m,can_pass=".",walls="#",protected_cells=c("S","E")){
   m_keep %>% select(-nb_nei)
 }
 
-
 drawMaze <- function(maze,switch=FALSE){
   x <- maze$x
   y <- maze$y
@@ -311,13 +300,14 @@ distanceInMaze <- function(mazeInfo, origin, walls, ways, keys){
 
 ###############
 # Matrices ----
-x <- c(1:20)
-M <- matrix(data = x, nrow = 4, byrow = TRUE)
-t(M)
-N <- M %*% t(M)
-eigen(N)
-diag(x = 1:5)
-N^3 #terme à terme
+
+# x <- c(1:20)
+# M <- matrix(data = x, nrow = 4, byrow = TRUE)
+# t(M)
+# N <- M %*% t(M)
+# eigen(N)
+# diag(x = 1:5)
+# N^3 #terme à terme
 # M matrice carrée, calcule M^p
 matrixPow <- function(M, p){
   if(p==0) return(diag(x = 1, nrow = nrow(M)))
@@ -327,7 +317,7 @@ matrixPow <- function(M, p){
   } 
   return(M %*% matrixPow(M, p-1))
 }
-matrixPow(N/5, 3)
+# matrixPow(N/5, 3)
 
 ###############
 # Graphs ----
@@ -368,8 +358,8 @@ g %>% all_shortest_paths("start")
 ###############
 # Trees ----
 
-make_tree(15, 2, mode = "out") %>% plot
-make_tree(11, 3, mode = "undirected") %>% plot
+# make_tree(15, 2, mode = "out") %>% plot
+# make_tree(11, 3, mode = "undirected") %>% plot
 
 fillTree <- function(container, inside){
   aTree <- data.frame(parent=c(), child=c(), nb=c())
@@ -385,7 +375,6 @@ fillTree <- function(container, inside){
   }
   aTree
 }
-
 # treeDF <- pmap_dfr(.l = Day07A, .f = fillTree)
 
 addChildren <- function(xNode, treeDF){
@@ -432,8 +421,6 @@ execBootCode <- function(bootCode){
   else return(c(0, accum))
 }
 
-
-
 ###############
 # Permutations----
 # https://www.rdocumentation.org/packages/permutations/versions/1.0-9
@@ -457,4 +444,4 @@ options(print_word_as_cycle=FALSE)
 f
 as.matrix(as.word(troisPerm))
 ###############
-??rperm
+# ??rperm
