@@ -9,6 +9,7 @@ source("C:/Users/MMAJR1/Documents/Perso/R for fun/AdventOfCode/AoC2024/advent_of
 
 ##########################################################
 # Data
+  
 dat <- readLines("C:/Users/MMAJR1/Documents/Perso/R for fun/AdventOfCode/AoC2024/advent_of_code_2024/data/D25.txt")
 which(dat=="") 
 
