@@ -14,9 +14,8 @@ which(dat=="")
 
 locks <- tibble(id_l=integer(),x1=integer(),x2=integer(),x3=integer(),x4=integer(),x5=integer())
 keys <- tibble(id_k=integer(),x1=integer(),x2=integer(),x3=integer(),x4=integer(),x5=integer())
-idl<-0
-idk<-0
-
+idl <- 0
+idk <- 0
 for(i in (0:499)*8+1){
   sd <- dat[i:(i+6)]
   type <- ifelse(sd[1]==".....","key","lock")
@@ -30,12 +29,12 @@ for(i in (0:499)*8+1){
     keys %<>% bind_rows(vals %>% mutate(id_k=idk))
   }
 }
-locks
 
 ##########################################################
 # A
 
-locks %>% cross_join(keys) %>% 
+locks %>% 
+  cross_join(keys) %>% 
   mutate(valid=
            x1.x + x1.y < 8 &
            x2.x + x2.y < 8 &
